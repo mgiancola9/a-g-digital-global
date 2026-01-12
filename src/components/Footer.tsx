@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { Linkedin, Twitter, Github, Mail } from "lucide-react";
+// UPDATED: Only importing the Mail icon now
+import { Mail } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -22,11 +23,9 @@ const Footer = () => {
     ],
   };
 
+  // UPDATED: Removed LinkedIn, Twitter, and GitHub. Updated the destination email.
   const socialLinks = [
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Github, href: "#", label: "GitHub" },
-    { icon: Mail, href: "mailto:hello@agdigital.com", label: "Email" },
+    { icon: Mail, href: "mailto:support@agdigitalcorp.com", label: "Email" },
   ];
 
   return (
