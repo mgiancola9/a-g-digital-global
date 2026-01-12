@@ -5,10 +5,17 @@ import { Button } from "@/components/ui/button";
 
 const navLinks = [
   { label: "Services", href: "#services" },
-  { label: "Portfolio", href: "#portfolio" },
-  { label: "Methodology", href: "#methodology" },
+  { label: "Methodology", href: "#advantages" },
   { label: "Contact", href: "#contact" },
 ];
+
+const scrollToContact = (e: React.MouseEvent) => {
+  e.preventDefault();
+  const contactSection = document.getElementById("contact");
+  if (contactSection) {
+    contactSection.scrollIntoView({ behavior: "smooth" });
+  }
+};
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -50,7 +57,7 @@ const Navbar = () => {
               {link.label}
             </a>
           ))}
-          <Button variant="gold" size="lg">
+          <Button variant="gold" size="lg" onClick={scrollToContact}>
             Get Global Quote
           </Button>
         </div>
@@ -83,7 +90,7 @@ const Navbar = () => {
                 {link.label}
               </a>
             ))}
-            <Button variant="gold" size="lg" className="mt-4">
+            <Button variant="gold" size="lg" className="mt-4" onClick={(e) => { scrollToContact(e); setIsMobileMenuOpen(false); }}>
               Get Global Quote
             </Button>
           </div>

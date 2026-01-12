@@ -131,18 +131,31 @@ const Hero = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="gold" size="xl">
+              <Button 
+                variant="gold" 
+                size="xl"
+                onClick={() => {
+                  const contactSection = document.getElementById("contact");
+                  if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+              >
                 Get Global Quote
               </Button>
-              <Button variant="gold-outline" size="xl">
-                View Our Work
+              <Button 
+                variant="gold-outline" 
+                size="xl"
+                asChild
+              >
+                <a href="tel:+13802780583">Call Now</a>
               </Button>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-border">
               {[
-                { value: "50+", label: "Global Clients" },
+                { value: "100+", label: "Performance Optimizations" },
                 { value: "99.9%", label: "Uptime SLA" },
                 { value: "<500ms", label: "Load Time" },
               ].map((stat) => (
