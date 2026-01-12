@@ -3,7 +3,6 @@ import { useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Send, CheckCircle, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 
 const projectScopes = [
   "New Website Development",
@@ -43,7 +42,6 @@ interface FormErrors {
 const Contact = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const { toast } = useToast();
 
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -56,6 +54,7 @@ const Contact = () => {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -93,23 +92,44 @@ const Contact = () => {
 
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      // Prepare JSON payload for POST request
+      const payload = {
+        fullName: formData.name.trim(),
+        company: formData.company.trim(),
+        email: formData.email.trim(),
+        projectScope: formData.scope,
+        budgetRange: formData.budget,
+        projectDetails: formData.message.trim(),
+        submittedAt: new Date().toISOString(),
+      };
 
-    toast({
-      title: "Message Sent Successfully!",
-      description: "We'll get back to you within 24 hours.",
-    });
+      // TODO: Replace with actual API endpoint
+      // await fetch('/api/contact', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(payload),
+      // });
 
-    setFormData({
-      name: "",
-      company: "",
-      email: "",
-      scope: "",
-      budget: "",
-      message: "",
-    });
-    setIsSubmitting(false);
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      
+      console.log('Form submission payload:', payload);
+
+      setIsSubmitted(true);
+      setFormData({
+        name: "",
+        company: "",
+        email: "",
+        scope: "",
+        budget: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error('Form submission error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -162,6 +182,31 @@ const Contact = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="max-w-2xl mx-auto"
         >
+          {isSubmitted ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4 }}
+              className="glass-card rounded-2xl p-12 text-center"
+            >
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                <CheckCircle className="w-10 h-10 text-green-500" />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-3">
+                ✅ Inquiry Received
+              </h3>
+              <p className="text-muted-foreground text-lg mb-6">
+                We will reach out within 24 hours.
+              </p>
+              <Button
+                variant="gold-outline"
+                size="lg"
+                onClick={() => setIsSubmitted(false)}
+              >
+                Submit Another Inquiry
+              </Button>
+            </motion.div>
+          ) : (
           <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-8 space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
@@ -311,6 +356,7 @@ const Contact = () => {
               )}
             </Button>
           </form>
+          )}
         </motion.div>
       </div>
     </section>
