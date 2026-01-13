@@ -25,6 +25,7 @@ interface FormData {
   name: string;
   company: string;
   email: string;
+  phone: string;
   scope: string;
   budget: string;
   message: string;
@@ -34,6 +35,7 @@ interface FormErrors {
   name?: string;
   company?: string;
   email?: string;
+  phone?: string;
   scope?: string;
   budget?: string;
 }
@@ -46,6 +48,7 @@ const Contact = () => {
     name: "",
     company: "",
     email: "",
+    phone: "",
     scope: "",
     budget: "",
     message: "",
@@ -72,6 +75,10 @@ const Contact = () => {
       newErrors.email = "Invalid email address";
     }
 
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    }
+
     if (!formData.scope) {
       newErrors.scope = "Please select a project scope";
     }
@@ -94,11 +101,14 @@ const Contact = () => {
     try {
       // 1. Prepare data specifically for your Google Sheet Script
       const formDataForScript = new FormData();
-      formDataForScript.append("name", formData.name.trim());
-      formDataForScript.append("business", formData.company.trim());
-      formDataForScript.append("email", formData.email.trim());
-      formDataForScript.append("message", `Scope: ${formData.scope} | Budget: ${formData.budget} | Details: ${formData.message.trim()}`);
-      
+      formDataForScript.append("Name", formData.name.trim());
+      formDataForScript.append("Company", formData.company.trim());
+      formDataForScript.append("Email", formData.email.trim());
+      formDataForScript.append("Phone", formData.phone.trim());
+      formDataForScript.append("Project Scope", formData.scope);
+      formDataForScript.append("Budget", formData.budget);
+      formDataForScript.append("Details", formData.message.trim());
+
       // 2. Send to your specific Google Apps Script URL
       const scriptURL = "https://script.google.com/macros/s/AKfycbzV7kV04Gy8sLbAdj6RxREEHe1DB49PCkkKWZ7E3upmsgIBPyrLlMRsMcwzpwtXDTTRJw/exec";
 
@@ -114,6 +124,7 @@ const Contact = () => {
         name: "",
         company: "",
         email: "",
+        phone: "",
         scope: "",
         budget: "",
         message: "",
@@ -125,7 +136,7 @@ const Contact = () => {
       setIsSubmitting(false);
     }
   };
-  
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
@@ -187,7 +198,7 @@ const Contact = () => {
                 <CheckCircle className="w-10 h-10 text-green-500" />
               </div>
               <h3 className="text-2xl font-bold text-foreground mb-3">
-                ✅ Inquiry Received
+                Inquiry Received
               </h3>
               <p className="text-muted-foreground text-lg mb-6">
                 We will reach out within 24 hours.
@@ -244,24 +255,47 @@ const Contact = () => {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Email Address *
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="john@acme.com"
-                className={inputStyles}
-              />
-              {errors.email && (
-                <p className={errorStyles}>
-                  <AlertCircle className="w-3 h-3" />
-                  {errors.email}
-                </p>
-              )}
+            {/* FIXED: Added Phone field beside Email Address */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="john@acme.com"
+                  className={inputStyles}
+                />
+                {errors.email && (
+                  <p className={errorStyles}>
+                    <AlertCircle className="w-3 h-3" />
+                    {errors.email}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="(380) 278-0583"
+                  className={inputStyles}
+                />
+                {errors.phone && (
+                  <p className={errorStyles}>
+                    <AlertCircle className="w-3 h-3" />
+                    {errors.phone}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
