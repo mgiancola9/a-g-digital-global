@@ -92,29 +92,23 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // Prepare JSON payload for POST request
-      const payload = {
-        fullName: formData.name.trim(),
-        company: formData.company.trim(),
-        email: formData.email.trim(),
-        projectScope: formData.scope,
-        budgetRange: formData.budget,
-        projectDetails: formData.message.trim(),
-        submittedAt: new Date().toISOString(),
-      };
-
-      // TODO: Replace with actual API endpoint
-      // await fetch('/api/contact', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(payload),
-      // });
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // 1. Prepare data specifically for your Google Sheet Script
+      const formDataForScript = new FormData();
+      formDataForScript.append("name", formData.name.trim());
+      formDataForScript.append("business", formData.company.trim());
+      formDataForScript.append("email", formData.email.trim());
+      formDataForScript.append("message", `Scope: ${formData.scope} | Budget: ${formData.budget} | Details: ${formData.message.trim()}`);
       
-      console.log('Form submission payload:', payload);
+      // 2. Send to your specific Google Apps Script URL
+      const scriptURL = "https://script.google.com/macros/s/AKfycbzV7kV04Gy8sLbAdj6RxREEHe1DB49PCkkKWZ7E3upmsgIBPyrLlMRsMcwzpwtXDTTRJw/exec";
 
+      await fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors", // Required for Google Apps Script redirects
+        body: formDataForScript,
+      });
+
+      // 3. Update the UI state
       setIsSubmitted(true);
       setFormData({
         name: "",
@@ -126,11 +120,12 @@ const Contact = () => {
       });
     } catch (error) {
       console.error('Form submission error:', error);
+      alert("There was an error sending your message. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
-
+  
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
